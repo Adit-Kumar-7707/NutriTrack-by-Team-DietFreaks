@@ -1,0 +1,116 @@
+Absolutely, Adit! This is a fantastic real-world application of data structures, and your twist makes it both practical and syllabus-aligned. Let’s break it down into the two tasks you asked for:
+
+---
+
+## 🧠 Task 1: Project Title, Introduction & Topics Used
+
+### 📌 **Project Title**  
+**NutriTrack: A Smart Diet Logger Using Core Data Structures in C**
+
+### 💡 **One-Liner Introduction**  
+A console-based diet logging system that allows users to input meals from a predefined list, tracks daily nutritional intake, and visualizes trends using optimized data structures like linked lists, stacks, queues, and trees.
+
+### 📚 **Topics Used & How They’re Applied**
+
+| Topic | Application |
+|-------|-------------|
+| **Linked List** | Stores dynamic meal entries for each day, allowing flexible addition/removal |
+| **Stack** | Tracks recent meals for undo functionality or last 5 entries |
+| **Queue** | Manages daily logs in chronological order for trend analysis |
+| **Tree (BST)** | Organizes food items by name or nutritional value for fast lookup |
+| **Sorting** | Sorts meals by calorie, protein, or other metrics using merge sort on linked list |
+| **Searching** | Searches meals by name or nutrient using BST or linear search fallback |
+| **File Handling** | Stores and retrieves daily nutrition summaries in `.txt` format |
+| **Bar Chart Rendering** | Displays nutrient trends using normalized ASCII bars in console |
+| **Complexity Analysis** | Ensures efficient performance for sorting, searching, and logging |
+
+---
+
+## 🛠️ Task 2: Detailed Plan & Workflow
+
+### 🗺️ **High-Level Workflow**
+
+```plaintext
+[Start]
+   ↓
+[User Menu]
+   ├── Option 1: Log Meal
+   │     ├── Choose from Preloaded List (BST)
+   │     └── Add to Daily Linked List
+   │           └── Push to Stack (Recent Meals)
+   │
+   ├── Option 2: View Daily Nutrition Summary
+   │     ├── Traverse Linked List
+   │     ├── Aggregate Nutrients
+   │     ├── Store in .txt File
+   │     └── Render ASCII Bar Chart
+   │
+   └── Option 3: Undo Last Meal
+         └── Pop from Stack → Remove from Linked List
+```
+
+---
+
+### 🔍 **Module Breakdown**
+
+#### 1️⃣ **Food Database Loader**
+- **Structure**: Binary Search Tree (BST)
+- **Function**: Load predefined meals with nutrient data
+- **Fields**: Name, Calories, Carbs, Fat, Sugar, Fiber, Protein
+
+#### 2️⃣ **Meal Logger**
+- **Structure**: Linked List (per day)
+- **Function**: Add meals dynamically
+- **Integration**: Push each entry to Stack for undo
+
+#### 3️⃣ **Undo Feature**
+- **Structure**: Stack
+- **Function**: Remove last meal entry from linked list
+
+#### 4️⃣ **Daily Nutrition Aggregator**
+- **Structure**: Queue (for day-wise logs)
+- **Function**: Traverse linked list → sum nutrients → enqueue summary
+
+#### 5️⃣ **File Writer**
+- **Format**: `.txt` file with daily totals
+- **Fields**: Date, Calories, Carbs, Fat, Sugar, Fiber, Protein
+
+#### 6️⃣ **Bar Chart Renderer**
+- **Logic**:
+  - Normalize each nutrient to max value
+  - Each bar = 20 `=`, each `=` = 5%
+  - Print in descending order of value
+
+#### 7️⃣ **Search & Sort Engine**
+- **Search**: BST for food lookup
+- **Sort**: Merge sort on linked list by nutrient
+
+---
+
+### 🧮 **Function Prototypes (C-style)**
+
+```c
+void loadFoodDatabase(TreeNode** root);
+void logMeal(TreeNode* root, LinkedList** dayLog, Stack* recentMeals);
+void undoLastMeal(LinkedList** dayLog, Stack* recentMeals);
+void generateDailySummary(LinkedList* dayLog, Queue* dailyQueue);
+void writeSummaryToFile(Queue* dailyQueue);
+void renderBarChart(NutrientSummary summary);
+TreeNode* searchFood(TreeNode* root, char* name);
+void sortMealsByCalories(LinkedList** dayLog);
+```
+
+---
+
+### 📅 **Development Timeline**
+
+| Phase | Tasks |
+|-------|-------|
+| Week 1 | Build BST loader, linked list logger, and stack undo |
+| Week 2 | Implement queue for daily summaries and file writer |
+| Week 3 | Add sorting, searching, and bar chart renderer |
+| Week 4 | Final testing, optimization, and documentation |
+
+---
+
+Would you like me to help sketch the data structure definitions next (structs for food, meal, tree node, etc.) or start building the function logic for one of the modules? We can go step-by-step.
