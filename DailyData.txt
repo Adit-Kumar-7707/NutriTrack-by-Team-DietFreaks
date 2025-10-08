@@ -1,0 +1,16 @@
+08-10-2025
+Calorie Intake: 95 kcal
+Carbohydrates: 25.00g
+Fats: 0.30g
+Protein: 0.50g
+Sugar: 19.00g
+Fiber: 2.00g
+------------------------
+
+Calorie Intake: 1000 kcal
+Carbohydrates: 100.00g
+Fats: 10.00g
+Protein: 100.00g
+Sugar: 10.00g
+Fiber: 10.00g
+------------------------
