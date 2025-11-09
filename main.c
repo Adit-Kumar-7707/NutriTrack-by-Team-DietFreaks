@@ -184,7 +184,7 @@ void fileInput(int totalCalories, float totalCarbs, float totalFats, float total
     printf("Daily totals appended to %s\n", filePath);
 }
 
-static void readLine(char *buf, size_t size){//helpr fxn
+static void readLine(char *buf, size_t size){//helper fxn
     if(fgets(buf, (int)size, stdin)==NULL){
         buf[0]='\0';
         return;
@@ -193,36 +193,55 @@ static void readLine(char *buf, size_t size){//helpr fxn
     if(len>0 && buf[len-1]=='\n') buf[len-1]='\0';
 }
 
-void printNutrientChart(struct FoodNode* food) {
-    if (food == NULL) {
-        printf("No data available.\n");
+void printNutrientChart(struct FoodNode* root) {
+    if (root == NULL) {
+        printf("No food data available.\n");
         return;
     }
+
+    int totalCal = 0;
+    float totalCarbs = 0, totalFats = 0, totalProtein = 0, totalSugar = 0, totalFiber = 0;
+    computeTotals(root, &totalCal, &totalCarbs, &totalFats, &totalProtein, &totalSugar, &totalFiber);
+
+    float goalCalories, goalCarbs, goalFats, goalSugar, goalFiber, goalProtein;
+
+    printf("\nEnter your daily nutrient goals:\n");
+    printf("Calories goal (kcal): ");
+    scanf("%f", &goalCalories);
+    printf("Carbs goal (g): ");
+    scanf("%f", &goalCarbs);
+    printf("Fats goal (g): ");
+    scanf("%f", &goalFats);
+    printf("Sugar goal (g): ");
+    scanf("%f", &goalSugar);
+    printf("Fiber goal (g): ");
+    scanf("%f", &goalFiber);
+    printf("Protein goal (g): ");
+    scanf("%f", &goalProtein);
+
     char *labels[] = {"Calories", "Carbs", "Fats", "Sugar", "Fiber", "Protein"};
-    float values[] = {food->calories, food->carbs, food->fats, food->sugar, food->fiber, food->protein};
+    float totals[] = {totalCal, totalCarbs, totalFats, totalSugar, totalFiber, totalProtein};
+    float goals[]  = {goalCalories, goalCarbs, goalFats, goalSugar, goalFiber, goalProtein};
+    char *units[]  = {"kcal", "g", "g", "g", "g", "g"};
     int n = 6;
 
-    float maxvalue = values[0];
-    for (int i = 1; i < n; i++) {
-        if (values[i] > maxvalue)
-            maxvalue = values[i];
-    }
 
-    printf("\nNUTRIENT CHART FOR: %s \n\n", food->name);
+    printf("\n========= DAILY NUTRIENT PROGRESS =========\n");
+    printf("-------------------------------------------\n");
 
     for (int i = 0; i < n; i++) {
-        int barLength = (int)((values[i] / maxvalue) * 50); 
+        float percent = (goals[i] > 0) ? (totals[i] / goals[i]) * 100 : 0;
+        if (percent > 100) percent = 100;
+        int barLength = (int)(percent / 2);
+
         printf("%-10s | ", labels[i]);
-
-        for (int j = 0; j < barLength; j++)
-            printf("=");
-
-        if (i == 0)
-            printf(" %.0f kcal\n", values[i]);
-        else
-            printf(" %.1fg\n", values[i]);
+        for (int j = 0; j < barLength; j++) printf("=");
+        printf(" %.1f%%  (%.1f %s of %.1f %s)\n", 
+               (totals[i] / goals[i]) * 100, totals[i], units[i], goals[i], units[i]);
     }
-printf("\n");
+
+    printf("-------------------------------------------\n");
+    printf("Note: Bars show %% of your daily nutrient goals achieved by all foods added today.\n\n");
 }
 
 
