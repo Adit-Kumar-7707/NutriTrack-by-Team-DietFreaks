@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -161,7 +162,7 @@ void freeTree(struct FoodNode* root){
 
 
 void fileInput(int totalCalories, float totalCarbs, float totalFats, float totalProtein, float totalSugar, float totalFiber){
-    char filePath[]="C:\\Users\\DELL\\Desktop\\DS PBL\\DailyData.txt";
+    char filePath[]="DailyData.txt";
     FILE *file = fopen(filePath, "a+");
     if (file == NULL) {
         printf("Error opening file '%s' for appending\n", filePath);
