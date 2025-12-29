@@ -1,199 +1,298 @@
 #include <stdio.h>
-
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 
-struct FoodItem{
+/* ===================== DATABASE ===================== */
+struct FoodItem {
     char name[99];
     char category[99];
     int calories;
-    int protein;
-    int carbs;
-    int sugar;
+    float protein;
+    float carbs;
+    float sugar;
 };
-/*
-struct FoodItem list[] = {
-    {"Apple", "Fruit", 52, 0.3, 14, 10},
-    {"Banana", "Fruit", 89, 1.1, 23, 12},
-    {"Orange", "Fruit", 47, 0.9, 12, 9},
-    {"Strawberry", "Fruit", 33, 0.7, 8, 4.9},
-    {"Blueberry", "Fruit", 57, 0.7, 14, 10},
-    {"Grapes", "Fruit", 69, 0.7, 18, 16},
-    {"Pineapple", "Fruit", 50, 0.5, 13, 10},
-    {"Mango", "Fruit", 60, 0.8, 15, 14},
-    {"Watermelon", "Fruit", 30, 0.6, 8, 6},
-    {"Kiwi", "Fruit", 61, 1.1, 15, 9},
-    
-    {"Broccoli", "Vegetable", 55, 3.7, 11, 2.2},
-    {"Spinach", "Vegetable", 23, 2.9, 4, 0.4},
-    {"Carrot", "Vegetable", 41, 0.9, 10, 4.7},
-    {"Tomato", "Vegetable", 18, 0.9, 3.9, 2.6},
-    {"Cucumber", "Vegetable", 16, 0.7, 3.6, 1.7},
-    {"Bell Pepper", "Vegetable", 31, 1.0, 6, 4.2},
-    {"Cauliflower", "Vegetable", 25, 1.9, 5, 1.9},
-    {"Onion", "Vegetable", 40, 1.1, 9, 4.2},
-    {"Garlic", "Vegetable", 149, 6.4, 33, 1.0},
-    {"Potato", "Vegetable", 77, 2.0, 17, 0.8},
-    
-    {"Chicken Breast", "Meat", 165, 31, 0, 0},
-    {"Salmon", "Fish", 208, 20, 0, 0},
-    {"Egg", "Protein", 155, 13, 1, 1},
-    {"Turkey", "Meat", 189, 29, 0, 0},
-    {"Beef", "Meat", 250, 26, 0, 0},
-    {"Tuna", "Fish", 132, 28, 0, 0},
-    {"Shrimp", "Seafood", 99, 24, 0.2, 0.2},
-    {"Cod", "Fish", 82, 18, 0, 0},
-    {"Mackerel", "Fish", 205, 19, 13, 0},
-    {"Lamb", "Meat", 294, 25, 21, 0},
-    
-    {"Almonds", "Nuts", 576, 21, 22, 4},
-    {"Peanuts", "Nuts", 567, 25, 16, 4},
-    {"Cashews", "Nuts", 553, 18, 30, 5},
-    {"Walnuts", "Nuts", 654, 15, 14, 2.6},
-    {"Oats", "Grain", 389, 17, 66, 1},
-    {"Rice (White)", "Grain", 130, 2.7, 28, 0},
-    {"Rice (Brown)", "Grain", 123, 2.6, 25.6, 0.5},
-    {"Quinoa", "Grain", 120, 4.4, 21.3, 0.9},
-    {"Bread (Whole Wheat)", "Grain", 247, 13, 41, 5},
-    {"Pasta", "Grain", 131, 5, 25, 1.1},
-    
-    {"Milk (Whole)", "Dairy", 61, 3.1, 5, 5},
-    {"Cheddar Cheese", "Dairy", 403, 25, 1, 0.5},
-    {"Yogurt (Plain)", "Dairy", 59, 10, 4, 3},
-    {"Cottage Cheese", "Dairy", 98, 11, 3, 2},
-    {"Butter", "Dairy", 717, 0.9, 0, 0.1},
-    {"Olive Oil", "Fat", 884, 0, 0, 0},
-    {"Peanut Butter", "Spread", 588, 25, 20, 9},
-    {"Honey", "Spread", 304, 0.3, 82, 82},
-    {"Jam", "Spread", 250, 0.4, 60, 50},
-    {"Maple Syrup", "Spread", 260, 0, 67, 60}
-}; */
 
+struct FoodItem database[] = {
+    {"Apple", "Fruit", 52, 0.3f, 14.0f, 10.0f},
+    {"Banana", "Fruit", 89, 1.1f, 23.0f, 12.0f},
+    {"Orange", "Fruit", 47, 0.9f, 12.0f, 9.0f},
+    {"Strawberry", "Fruit", 33, 0.7f, 8.0f, 4.9f},
+    {"Blueberry", "Fruit", 57, 0.7f, 14.0f, 10.0f},
+    {"Grapes", "Fruit", 69, 0.7f, 18.0f, 16.0f},
+    {"Pineapple", "Fruit", 50, 0.5f, 13.0f, 10.0f},
+    {"Mango", "Fruit", 60, 0.8f, 15.0f, 14.0f},
+    {"Watermelon", "Fruit", 30, 0.6f, 8.0f, 6.0f},
+    {"Kiwi", "Fruit", 61, 1.1f, 15.0f, 9.0f},
 
-//Name, Calories, Carbs, Fat, Sugar, Fiber, Protein
-struct FoodNode{
+    {"Broccoli", "Vegetable", 55, 3.7f, 11.0f, 2.2f},
+    {"Spinach", "Vegetable", 23, 2.9f, 4.0f, 0.4f},
+    {"Carrot", "Vegetable", 41, 0.9f, 10.0f, 4.7f},
+    {"Tomato", "Vegetable", 18, 0.9f, 3.9f, 2.6f},
+    {"Cucumber", "Vegetable", 16, 0.7f, 3.6f, 1.7f},
+    {"Bell Pepper", "Vegetable", 31, 1.0f, 6.0f, 4.2f},
+    {"Cauliflower", "Vegetable", 25, 1.9f, 5.0f, 1.9f},
+    {"Onion", "Vegetable", 40, 1.1f, 9.0f, 4.2f},
+    {"Garlic", "Vegetable", 149, 6.4f, 33.0f, 1.0f},
+    {"Potato", "Vegetable", 77, 2.0f, 17.0f, 0.8f},
+
+    {"Chicken Breast", "Meat", 165, 31.0f, 0.0f, 0.0f},
+    {"Salmon", "Fish", 208, 20.0f, 0.0f, 0.0f},
+    {"Egg", "Protein", 155, 13.0f, 1.0f, 1.0f},
+    {"Turkey", "Meat", 189, 29.0f, 0.0f, 0.0f},
+    {"Beef", "Meat", 250, 26.0f, 0.0f, 0.0f},
+    {"Tuna", "Fish", 132, 28.0f, 0.0f, 0.0f},
+    {"Shrimp", "Seafood", 99, 24.0f, 0.2f, 0.2f},
+    {"Cod", "Fish", 82, 18.0f, 0.0f, 0.0f},
+    {"Mackerel", "Fish", 205, 19.0f, 13.0f, 0.0f},
+    {"Lamb", "Meat", 294, 25.0f, 21.0f, 0.0f},
+
+    {"Almonds", "Nuts", 576, 21.0f, 22.0f, 4.0f},
+    {"Peanuts", "Nuts", 567, 25.0f, 16.0f, 4.0f},
+    {"Cashews", "Nuts", 553, 18.0f, 30.0f, 5.0f},
+    {"Walnuts", "Nuts", 654, 15.0f, 14.0f, 2.6f},
+    {"Oats", "Grain", 389, 17.0f, 66.0f, 1.0f},
+    {"Rice (White)", "Grain", 130, 2.7f, 28.0f, 0.0f},
+    {"Rice (Brown)", "Grain", 123, 2.6f, 25.6f, 0.5f},
+    {"Quinoa", "Grain", 120, 4.4f, 21.3f, 0.9f},
+    {"Bread (Whole Wheat)", "Grain", 247, 13.0f, 41.0f, 5.0f},
+    {"Pasta", "Grain", 131, 5.0f, 25.0f, 1.1f},
+
+    {"Milk (Whole)", "Dairy", 61, 3.1f, 5.0f, 5.0f},
+    {"Cheddar Cheese", "Dairy", 403, 25.0f, 1.0f, 0.5f},
+    {"Yogurt (Plain)", "Dairy", 59, 10.0f, 4.0f, 3.0f},
+    {"Cottage Cheese", "Dairy", 98, 11.0f, 3.0f, 2.0f},
+    {"Butter", "Dairy", 717, 0.9f, 0.0f, 0.1f},
+    {"Olive Oil", "Fat", 884, 0.0f, 0.0f, 0.0f},
+    {"Peanut Butter", "Spread", 588, 25.0f, 20.0f, 9.0f},
+    {"Honey", "Spread", 304, 0.3f, 82.0f, 82.0f},
+    {"Jam", "Spread", 250, 0.4f, 60.0f, 50.0f},
+    {"Maple Syrup", "Spread", 260, 0.0f, 67.0f, 60.0f}
+};
+
+int dbSize = sizeof(database) / sizeof(database[0]);
+
+struct FoodNode {
     char name[100];
     int calories;
-    float carbs;
-    float fats;
-    float sugar;
-    float fiber;
     float protein;
-
+    float carbs;
+    float sugar;
     struct FoodNode* left;
     struct FoodNode* right;
 };
 
-struct FoodNode* create(const char* name, int calories, float carbs, float fats, float sugar, float fiber, float protein){
-    struct FoodNode* temp =  (struct FoodNode*)malloc(sizeof(struct FoodNode));
-    if(temp==NULL){
-        printf("Faced an error while allocating memory!\n");
+/* ===================== DAILY HISTORY ===================== */
+struct HistoryNode {
+    char name[100];
+    int calories;
+    float protein;
+    float carbs;
+    float sugar;
+    struct HistoryNode* next;
+};
+
+struct HistoryNode* historyHead = NULL;
+
+/* ===================== STACK FOR UNDO ===================== */
+struct FoodNode* undoStack[500];
+int top = -1;
+
+void push(struct FoodNode* node) {
+    if (top < 499) undoStack[++top] = node;
+}
+
+struct FoodNode* pop() {
+    if (top >= 0) return undoStack[top--];
+    return NULL;
+}
+
+/* ===================== BST FUNCTIONS ===================== */
+struct FoodNode* createNodeFromItem(const struct FoodItem *item) {
+    struct FoodNode* node = malloc(sizeof(struct FoodNode));
+    if (!node) {
+        fprintf(stderr, "Memory allocation failed\n");
         return NULL;
     }
-    //intitializing all the fields
-    strncpy(temp->name, name, sizeof(temp->name)-1);
-    temp->name[sizeof(temp->name)-1]='\0';
-    
-    temp->calories = calories;
-    temp->carbs = carbs;
-    temp->fats = fats;
-    temp->sugar = sugar;
-    temp->fiber = fiber;
-    temp->protein = protein;
-    
-    temp->left = NULL;
-    temp->right = NULL;
-
-    return temp;
+    strncpy(node->name, item->name, sizeof(node->name)-1);
+    node->name[sizeof(node->name)-1] = '\0';
+    node->calories = item->calories;
+    node->protein = item->protein;
+    node->carbs = item->carbs;
+    node->sugar = item->sugar;
+    node->left = node->right = NULL;
+    return node;
 }
 
 struct FoodNode* insertNode(struct FoodNode* root, struct FoodNode* temp){
-    if(root==NULL){
-        return temp;
-    }
-    if(temp->calories < root->calories){
+    if(root == NULL) return temp;
+    if(temp->calories < root->calories)
         root->left = insertNode(root->left, temp);
-    }
-    else{
+    else
         root->right = insertNode(root->right, temp);
+    return root;
+}
+
+struct FoodNode* deleteNode(struct FoodNode* root, int calories) {
+    if (!root) return NULL;
+
+    if (calories < root->calories)
+        root->left = deleteNode(root->left, calories);
+    else if (calories > root->calories)
+        root->right = deleteNode(root->right, calories);
+    else {
+        if (!root->left) { 
+            struct FoodNode* t = root->right; 
+            free(root); 
+            return t; 
+        }
+        if (!root->right){ 
+            struct FoodNode* t = root->left; 
+            free(root); 
+            return t; 
+        }
+
+        struct FoodNode* temp = root->right;
+        while (temp->left) temp = temp->left;
+
+        root->calories = temp->calories;
+        strcpy(root->name, temp->name);
+        root->protein = temp->protein;
+        root->carbs = temp->carbs;
+        root->sugar = temp->sugar;
+
+        root->right = deleteNode(root->right, temp->calories);
     }
     return root;
 }
 
-void displayNode(struct FoodNode* root){
-    if(root == NULL){
-        return;
-    }
+void displayNode(const struct FoodNode* root){
+    if(root == NULL) return;
     printf("\nName: %s\n", root->name);
     printf("Calories: %d kcal\n", root->calories);
-    printf("Carbs: %.1fg\n", root->carbs);
-    printf("Fat: %.1fg\n", root->fats);
-    printf("Protein: %.1fg\n", root->protein);
-    printf("Sugar: %.1fg\n", root->sugar);
-    printf("Fiber: %.1fg\n", root->fiber);
+    printf("Protein: %.2fg\n", root->protein);
+    printf("Carbs: %.2fg\n", root->carbs);
+    printf("Sugar: %.2fg\n", root->sugar);
 }
 
 void inorderDisplay(struct FoodNode* root){
-    if(root==NULL) return;
+    if(root == NULL) return;
     inorderDisplay(root->left);
     displayNode(root);
     inorderDisplay(root->right);
 }
 
-void computeTotals(struct FoodNode* root, int *calSum, float *carbsSum, float *fatsSum, float *proteinSum, float *sugarSum, float *fiberSum){
-    if(root==NULL) return;
-    computeTotals(root->left, calSum, carbsSum, fatsSum, proteinSum, sugarSum, fiberSum);
+void computeTotals(struct FoodNode* root, int *calSum, float *proteinSum, float *carbsSum, float *sugarSum){
+    if(root == NULL) return;
+    computeTotals(root->left, calSum, proteinSum, carbsSum, sugarSum);
     *calSum += root->calories;
-    *carbsSum += root->carbs;
-    *fatsSum += root->fats;
     *proteinSum += root->protein;
+    *carbsSum += root->carbs;
     *sugarSum += root->sugar;
-    *fiberSum += root->fiber;
-    computeTotals(root->right, calSum, carbsSum, fatsSum, proteinSum, sugarSum, fiberSum);
+    computeTotals(root->right, calSum, proteinSum, carbsSum, sugarSum);
 }
 
 void freeTree(struct FoodNode* root){
-    if(root==NULL) return;
+    if(root == NULL) return;
     freeTree(root->left);
     freeTree(root->right);
     free(root);
 }
 
+/* ===================== LINKED LIST FUNCTIONS ===================== */
+void addToHistory(const struct FoodItem* item) {
+    struct HistoryNode* node = malloc(sizeof(struct HistoryNode));
+    if (!node) return;
 
-void fileInput(int totalCalories, float totalCarbs, float totalFats, float totalProtein, float totalSugar, float totalFiber){
-    char filePath[]="DailyData.txt";
-    FILE *file = fopen(filePath, "a+");
+    strcpy(node->name, item->name);
+    node->calories = item->calories;
+    node->protein = item->protein;
+    node->carbs = item->carbs;
+    node->sugar = item->sugar;
+    node->next = NULL;
+
+    if (historyHead == NULL)
+        historyHead = node;
+    else {
+        struct HistoryNode* temp = historyHead;
+        while (temp->next) temp = temp->next;
+        temp->next = node;
+    }
+}
+
+void removeLastHistory(int calories) {
+    if (!historyHead) return;
+
+    if (historyHead->calories == calories) {
+        struct HistoryNode* t = historyHead;
+        historyHead = historyHead->next;
+        free(t);
+        return;
+    }
+
+    struct HistoryNode* prev = historyHead;
+    struct HistoryNode* curr = historyHead->next;
+
+    while (curr) {
+        if (curr->calories == calories) {
+            prev->next = curr->next;
+            free(curr);
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
+void showHistory() {
+    if (!historyHead) {
+        printf("\nNo meals added today.\n");
+        return;
+    }
+
+    printf("\n===== DAILY FOOD HISTORY (Linked List) =====\n");
+    struct HistoryNode* temp = historyHead;
+    while (temp) {
+        printf("%s - %d kcal, Protein %.1fg, Carbs %.1fg, Sugar %.1fg\n",
+               temp->name, temp->calories, temp->protein, temp->carbs, temp->sugar);
+        temp = temp->next;
+    }
+}
+
+void freeHistory() {
+    struct HistoryNode* current = historyHead;
+    while (current) {
+        struct HistoryNode* next = current->next;
+        free(current);
+        current = next;
+    }
+    historyHead = NULL;
+}
+
+/* ===================== FILE I/O ===================== */
+void fileInput(int totalCalories, float totalProtein, float totalCarbs, float totalSugar){
+    FILE *file = fopen("DailyData.txt", "a+");
     if (file == NULL) {
-        printf("Error opening file '%s' for appending\n", filePath);
+        printf("Error opening file '%s' for appending\n", "DailyData.txt");
         return;
     }
     time_t now = time(NULL);
     struct tm *t = localtime(&now);
-    char date[20];
+    char date[32];
     strftime(date, sizeof(date), "%d-%m-%Y | %H:%M:%S", t);
 
     fprintf(file, "%s\n", date);
     fprintf(file, "Calorie Intake: %d kcal\n", totalCalories);
-    fprintf(file, "Carbohydrates: %.2fg\n", totalCarbs);
-    fprintf(file, "Fats: %.2fg\n", totalFats);
     fprintf(file, "Protein: %.2fg\n", totalProtein);
+    fprintf(file, "Carbohydrates: %.2fg\n", totalCarbs);
     fprintf(file, "Sugar: %.2fg\n", totalSugar);
-    fprintf(file, "Fiber: %.2fg\n", totalFiber);
     fprintf(file, "------------------------\n");
     fclose(file);
-    printf("Daily totals appended to %s\n", filePath);
+    printf("Daily totals appended to TXT File\n");
 }
 
-static void readLine(char *buf, size_t size){//helper fxn
-    if(fgets(buf, (int)size, stdin)==NULL){
-        buf[0]='\0';
-        return;
-    }
-    size_t len = strlen(buf);
-    if(len>0 && buf[len-1]=='\n') buf[len-1]='\0';
-}
-
+/* ===================== NUTRIENT CHART ===================== */
 void printNutrientChart(struct FoodNode* root) {
     if (root == NULL) {
         printf("No food data available.\n");
@@ -201,130 +300,175 @@ void printNutrientChart(struct FoodNode* root) {
     }
 
     int totalCal = 0;
-    float totalCarbs = 0, totalFats = 0, totalProtein = 0, totalSugar = 0, totalFiber = 0;
-    computeTotals(root, &totalCal, &totalCarbs, &totalFats, &totalProtein, &totalSugar, &totalFiber);
+    float totalProtein = 0, totalCarbs = 0, totalSugar = 0;
+    computeTotals(root, &totalCal, &totalProtein, &totalCarbs, &totalSugar);
 
-    float goalCalories, goalCarbs, goalFats, goalSugar, goalFiber, goalProtein;
+    float goalCalories, goalProtein, goalCarbs, goalSugar;
 
     printf("\nEnter your daily nutrient goals:\n");
     printf("Calories goal (kcal): ");
-    scanf("%f", &goalCalories);
-    printf("Carbs goal (g): ");
-    scanf("%f", &goalCarbs);
-    printf("Fats goal (g): ");
-    scanf("%f", &goalFats);
-    printf("Sugar goal (g): ");
-    scanf("%f", &goalSugar);
-    printf("Fiber goal (g): ");
-    scanf("%f", &goalFiber);
+    if (scanf("%f", &goalCalories) != 1) { 
+        while (getchar()!='\n'); 
+        printf("Invalid input.\n"); 
+        return; 
+    }
     printf("Protein goal (g): ");
-    scanf("%f", &goalProtein);
+    if (scanf("%f", &goalProtein) != 1) { 
+        while (getchar()!='\n'); 
+        printf("Invalid input.\n"); 
+        return; 
+    }
+    printf("Carbs goal (g): ");
+    if (scanf("%f", &goalCarbs) != 1) { 
+        while (getchar()!='\n'); 
+        printf("Invalid input.\n"); 
+        return; 
+    }
+    printf("Sugar goal (g): ");
+    if (scanf("%f", &goalSugar) != 1) { 
+        while (getchar()!='\n'); 
+        printf("Invalid input.\n"); 
+        return; 
+    }
+    while (getchar()!='\n');
 
-    char *labels[] = {"Calories", "Carbs", "Fats", "Sugar", "Fiber", "Protein"};
-    float totals[] = {totalCal, totalCarbs, totalFats, totalSugar, totalFiber, totalProtein};
-    float goals[]  = {goalCalories, goalCarbs, goalFats, goalSugar, goalFiber, goalProtein};
-    char *units[]  = {"kcal", "g", "g", "g", "g", "g"};
-    int n = 6;
-
+    const char *labels[] = {"Calories", "Protein", "Carbs", "Sugar"};
+    float totals[] = { (float)totalCal, totalProtein, totalCarbs, totalSugar };
+    float goals[]  = { goalCalories, goalProtein, goalCarbs, goalSugar };
+    const char *units[]  = {"kcal", "g", "g", "g"};
+    int n = 4;
 
     printf("\n========= DAILY NUTRIENT PROGRESS =========\n");
     printf("-------------------------------------------\n");
 
     for (int i = 0; i < n; i++) {
-        float percent = (goals[i] > 0) ? (totals[i] / goals[i]) * 100 : 0;
-        if (percent > 100) percent = 100;
-        int barLength = (int)(percent / 2);
+        float percent = (goals[i] > 0.0001f) ? (totals[i] / goals[i]) * 100.0f : 0.0f;
+        if (percent > 100.0f) percent = 100.0f;
+        int barLength = (int)(percent / 2.0f);
 
-        printf("%-10s | ", labels[i]);
+        printf("%-8s | ", labels[i]);
         for (int j = 0; j < barLength; j++) printf("=");
         printf(" %.1f%%  (%.1f %s of %.1f %s)\n", 
-               (totals[i] / goals[i]) * 100, totals[i], units[i], goals[i], units[i]);
+               (goals[i] > 0.0001f) ? (totals[i] / goals[i]) * 100.0f : 0.0f,
+               totals[i], units[i], goals[i], units[i]);
     }
 
     printf("-------------------------------------------\n");
-    printf("Note: Bars show %% of your daily nutrient goals achieved by all foods added today.\n\n");
 }
 
+/* ===================== HELPER FUNCTIONS ===================== */
+void readLine(char *buf, size_t size){
+    if (fgets(buf, (int)size, stdin) == NULL) {
+        buf[0] = '\0';
+        return;
+    }
+    size_t len = strlen(buf);
+    if (len > 0 && buf[len-1] == '\n') buf[len-1] = '\0';
+}
 
-int main(){
+int caseInsensitiveEqual(const char *a, const char *b) {
+    while (*a && *b) {
+        if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) return 0;
+        a++; b++;
+    }
+    return *a == '\0' && *b == '\0';
+}
+
+const struct FoodItem* searchFood(const char *name) {
+    for (int i = 0; i < dbSize; ++i) {
+        if (caseInsensitiveEqual(database[i].name, name)) 
+            return &database[i];
+    }
+    return NULL;
+}
+
+/* ===================== MAIN ===================== */
+int main(void) {
     struct FoodNode* root = NULL;
-    char input[128];
-    while(1){
+    char input[200];
+    int choice;
+
+    while (1) {
         printf("\n=== Food Database Menu ===\n");
         printf("1) Add food item\n");
-        printf("2) Display all food items (sorted by calories)\n");
-        printf("3) Save daily totals to file\n");
-        printf("4) Display Chart \n");
+        printf("2) Display sorted food items (BST)\n");
+        printf("3) Save totals to file\n");
+        printf("4) Display nutrient chart\n");
         printf("5) Exit\n");
-        printf("Choose an option: ");
-        readLine(input, sizeof(input));
-        if(strcmp(input, "1")==0){
-            char name[100];
-            int calories = 0;
-            float carbs=0, fats=0, sugar=0, fiber=0, protein=0;
+        printf("6) Show Daily History (Linked List)\n");
+        printf("7) Undo last added food\n");
+        printf("Choose an option (1-7): ");
+        
+        if (scanf("%d", &choice) != 1) {
+            while (getchar() != '\n');
+            printf("Invalid option, please enter a number 1-7.\n");
+            continue;
+        }
+        while (getchar() != '\n');
+
+        if (choice == 1) {
             printf("Enter food name: ");
-            readLine(name, sizeof(name));
-            while(1){
-                printf("Calories (kcal): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%d", &calories)==1) break;
-                printf("Invalid number, try again.\n");
+            readLine(input, sizeof(input));
+            
+            if (input[0] == '\0') {
+                printf("Empty name\n");
+                continue;
             }
-            while(1){
-                printf("Carbs (g): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%f", &carbs)==1) break;
-                printf("Invalid number, try again.\n");
+
+            const struct FoodItem *item = searchFood(input);
+            if (!item) {
+                printf("Food '%s' not found in database.\n", input);
+                continue;
             }
-            while(1){
-                printf("Fats (g): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%f", &fats)==1) break;
-                printf("Invalid number, try again.\n");
+
+            struct FoodNode* node = createNodeFromItem(item);
+            if (node != NULL) {
+                root = insertNode(root, node);
+                push(node);
+                addToHistory(item);
+                printf("Added '%s'\n", item->name);
             }
-            while(1){
-                printf("Protein (g): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%f", &protein)==1) break;
-                printf("Invalid number, try again.\n");
-            }
-            while(1){
-                printf("Sugar (g): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%f", &sugar)==1) break;
-                printf("Invalid number, try again.\n");
-            }
-            while(1){
-                printf("Fiber (g): ");
-                readLine(input, sizeof(input));
-                if(sscanf(input, "%f", &fiber)==1) break;
-                printf("Invalid number, try again.\n");
-            }
-            struct FoodNode* node = create(name, calories, carbs, fats, sugar, fiber, protein);
-            if(node!=NULL) root = insertNode(root, node);
-            printf("Food item added.\n");
-        } else if(strcmp(input, "2")==0){
-            if(root==NULL){
+        }
+        else if (choice == 2) {
+            if (root == NULL) {
                 printf("No food items to display.\n");
             } else {
-                printf("\n-- Food items (inorder by calories) --\n");
+                printf("\n-- Food items (sorted by calories) --\n");
                 inorderDisplay(root);
             }
-        } else if(strcmp(input, "3")==0){
-            int totalCal=0; float totalCarbs=0, totalFats=0, totalProtein=0, totalSugar=0, totalFiber=0;
-            computeTotals(root, &totalCal, &totalCarbs, &totalFats, &totalProtein, &totalSugar, &totalFiber);
-            fileInput(totalCal, totalCarbs, totalFats, totalProtein, totalSugar, totalFiber);
-        } 
-        
-        else if(strcmp(input, "4")==0){
+        }
+        else if (choice == 3) {
+            int totalCal = 0;
+            float totalProtein = 0.0f, totalCarbs = 0.0f, totalSugar = 0.0f;
+            computeTotals(root, &totalCal, &totalProtein, &totalCarbs, &totalSugar);
+            fileInput(totalCal, totalProtein, totalCarbs, totalSugar);
+        }
+        else if (choice == 4) {
             printNutrientChart(root);
-        } else if(strcmp(input, "5")==0){
+        }
+        else if (choice == 5) {
             break;
-        } else {
-            printf("Invalid option, try again.\n");
+        }
+        else if (choice == 6) {
+            showHistory();
+        }
+        else if (choice == 7) {
+            struct FoodNode* last = pop();
+            if (!last) {
+                printf("Nothing to undo.\n");
+            } else {
+                root = deleteNode(root, last->calories);
+                removeLastHistory(last->calories);
+                printf("Undo completed. Removed: %s\n", last->name);
+            }
+        }
+        else {
+            printf("Invalid option, please enter a number 1-7.\n");
         }
     }
+
     freeTree(root);
+    freeHistory();
     printf("Exiting. Goodbye!\n");
     return 0;
 }
